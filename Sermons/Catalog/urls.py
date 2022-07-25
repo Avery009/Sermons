@@ -7,5 +7,5 @@ urlpatterns = [
 	path('enter/',views.entersermon, name='enter_sermon'),
 	path('view/<int:sermon_id>', views.viewsermon, name='view_sermon'),
 	path('edit/<int:sermon_id>', views.editsermon, name='edit_sermon'),
-	path('remove/<int:sermon_id>', views.givethanks, name='remove_sermon'),
+	path('remove/<int:sermon_id>', views.removesermon, name='remove_sermon'),
 ]

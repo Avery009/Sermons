@@ -1,39 +1,43 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, Http404
-from .models import Testimonial
+from .models import Sermon
 from .forms import forms
 from django.template import loader
 import datetime
 
 
 
-def testimonials(request):
+def sermons(request):
 	#Load completed and current as separate lists
-	user_current_list = Testimonial.objects.all().order_by('testimonial_date')
-	template = loader.get_template('testimonials.html')
+	sermon_list = Sermon.objects.all().order_by('sermon_date')
+	template = loader.get_template('sermons.html')
 	context = {
-		'testimonial_list' : user_current_list,
+		'sermon_list' : sermon_list,
 	}
 	return HttpResponse(template.render(context,request))
 
-def entertestimonial(request):
+def entersermon(request):
 	if request.method == 'GET':
-		form = forms.TestimonialEntry()
+		form = forms.SermonEntry()
 		context = {
 			'form': form,
 			'reqGet': True
 		}
-		template = loader.get_template('testimonialform.html')
+		template = loader.get_template('sermonform.html')
 	elif request.method == 'POST':
-		form = forms.TestimonialEntry(request.POST)
+		form = forms.SermonEntry(request.POST)
 		if form.is_valid():
-			td = datetime.datetime.now()
-			tt = form.cleaned_data['testimonial_title']
-			ted = form.cleaned_data['testimonial_description']
-			tc = '1'
+			sud = datetime.datetime.now()
+			st = form.cleaned_data['sermon_title']
+			sde = form.cleaned_data['sermon_description']
+			sd = form.cleaned_data['sermon_date']
+			sc = form.cleaned_data['sermon_content']
+			sa = form.cleaned_data['sermon_author']
+			sl = form.cleaned_data['sermon_location']
+			
 			try:
-				p = Testimonial(testimonial_title=tt,testimonial_date=td,testimonial_description=ted,thanks_count=tc)
-				p.save()
+				s = Sermon(sermon_title=st,sermon_upload_date=sud,sermon_description=sde,sermon_date=sd,sermon_content=sc,sermon_author=sa,sermon_location=sl)
+				s.save()
 				return redirect('/')
 			except Exception as e:
 				template = loader.get_template('error.html')
@@ -52,14 +56,14 @@ def entertestimonial(request):
 		}
 	return HttpResponse(template.render(context,request))
 
-def viewtestimonial(request,testimonial_id):
+def viewsermon(request,sermon_id):
 	#View an individual testimonial to pray for it
 	if request.method == 'GET':
 		try:
-			testimonial = Testimonial.objects.get(pk=testimonial_id)
-			template = loader.get_template('testimonial.html')
+			sermon = Sermon.objects.get(pk=sermon_id)
+			template = loader.get_template('sermon.html')
 			context = {
-				'testimonial' : testimonial
+				'sermon' : sermon
 			}
 		except Exception as e:
 			template = loader.get_template('error.html')
@@ -73,7 +77,7 @@ def viewtestimonial(request,testimonial_id):
 		template = loader.get_template('error.html')
 	return HttpResponse(template.render(context,request))
 
-def thank(request, testimonial_id):
+def editsermon(request, testimonial_id):
 	if request.method == 'GET':
 		try:
 			testimonial = Testimonial.objects.get(pk=testimonial_id)
@@ -98,7 +102,7 @@ def thank(request, testimonial_id):
 		template = loader.get_template('error.html')
 	return HttpResponse(template.render(context,request))
 
-def givethanks(request, testimonial_id, thanks_count):
+def removesermon(request, testimonial_id, thanks_count):
 	if request.method == 'POST':
 		try:
 			testimonial = Testimonial.objects.get(pk=testimonial_id)
