@@ -9,7 +9,7 @@ import datetime
 
 def sermons(request):
 	#Load completed and current as separate lists
-	sermon_list = Sermon.objects.all().order_by('sermon_date')
+	sermon_list = Sermon.objects.all().order_by('sermon_upload_date')
 	template = loader.get_template('sermons.html')
 	context = {
 		'sermon_list' : sermon_list,
@@ -30,13 +30,12 @@ def entersermon(request):
 			sud = datetime.datetime.now()
 			st = form.cleaned_data['sermon_title']
 			sde = form.cleaned_data['sermon_description']
-			sd = form.cleaned_data['sermon_date']
 			sc = form.cleaned_data['sermon_content']
 			sa = form.cleaned_data['sermon_author']
 			sl = form.cleaned_data['sermon_location']
 			
 			try:
-				s = Sermon(sermon_title=st,sermon_upload_date=sud,sermon_description=sde,sermon_date=sd,sermon_content=sc,sermon_author=sa,sermon_location=sl)
+				s = Sermon(sermon_title=st,sermon_upload_date=sud,sermon_description=sde,sermon_content=sc,sermon_author=sa,sermon_location=sl)
 				s.save()
 				return redirect('/')
 			except Exception as e:
